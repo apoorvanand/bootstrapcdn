@@ -18,6 +18,7 @@
     "ci": "npm run lint && npm run mocha:suite",
     "test": "npm run lint && npm run mocha",
     "purge-latest": "bash ./scripts/purge.sh",
+    "bootlint": "node ./scripts/update_bootlint.js",
     "bootswatch": "node ./scripts/bootswatch.js",
     "integrity": "node ./scripts/integrity.js",
     "sri": "node ./scripts/sri.js",
@@ -53,6 +54,7 @@
     "pug-lint": "^2.5.0",
     "pug-lint-config-clock": "^2.0.0",
     "request": "^2.85.0",
+    "shelljs": "^0.8.1",
     "uglify-js": "^3.3.21"
   },
   "engines": {
