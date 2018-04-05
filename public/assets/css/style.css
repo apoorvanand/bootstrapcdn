@@ -1,3 +1,18 @@
+html {
+    min-height: 100%;
+    position: relative;
+}
+
+body {
+    margin-bottom: 300px;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
 .navbar-brand > svg {
     display: inline-block;
     margin-right: 8px;
@@ -43,8 +58,8 @@ footer {
 
 
 .carbonads-container {
-    padding: 2em 1.5em;
-    position: relative;
+    display: block;
+    min-height: 250px;
 }
 
 .ads-info-toggler {
@@ -52,14 +67,17 @@ footer {
     display: block;
     padding: 4px;
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 0.5rem;
+    right: 1rem;
     width: 30px;
     height: 30px;
 }
 
 #carbonads {
+    border: 1px solid rgba(0, 0, 0, 0.125);
     overflow: hidden;
+    padding: 3rem 1rem;
+    position: relative;
 }
 
 #carbonads span {
@@ -96,6 +114,9 @@ footer {
     text-transform: uppercase;
 }
 
+.twitter-timeline-custom {
+    min-height: 840px;
+}
 
 /* ugly but it's their selector... */
 #iubenda_policy .iub_container > .iub_footer img {
