@@ -38,23 +38,25 @@ https.get(`https://raw.githubusercontent.com/twbs/bootlint/v${version}/dist/brow
         return;
     }
 
-    mkdir(bootlintDir);
-    pushd(bootlintDir);
+    fs.mkdirSync(bootlintDir);
 
     const targetFile = 'bootlint.js';
-    const targetMinFile = 'bootlint.min.js';
-    const targetSourceMapFile = 'bootlint.min.js.map';
-    const file = fs.createWriteStream(targetFile);
+    const targetMinFile = `${targetFile.substr(0, targetFile.length - 3)}.min${targetFile.substr(targetFile.lastIndexOf('.'))}`;
+    const targetSourceMapFile = `${targetMinFile}.map`;
+
+    const targetFilepath = path.join(bootlintDir, targetFile);
+    const targetMinFilepath = path.join(bootlintDir, targetMinFile);
+    const file = fs.createWriteStream(targetFilepath);
 
     res.pipe(file);
 
     res.on('end', () => {
         file.close();
 
-        exec(`${UGLIFYJS} ${targetFile} -o ${targetMinFile} --compress --source-map "filename=${targetSourceMapFile},includeSources,url=${targetSourceMapFile}" --comments "/(?:^!|@(?:license|preserve|cc_on))/"`);
+        exec(`${UGLIFYJS} ${targetFilepath} -o ${targetMinFilepath} --compress --source-map "filename=${targetSourceMapFile},includeSources,url=${targetSourceMapFile}" --comments "/(?:^!|@(?:license|preserve|cc_on))/"`);
 
-        popd();
-
-        echo(`\nDo not forget to update "${path.normalize('config/_config.yml')}"!`);
+        console.log(`\nDo not forget to update "${path.normalize('config/_config.yml')}"!`);
+    }).on('error', (err) => {
+        console.error(`Got error: ${err.message}`);
     });
 });
