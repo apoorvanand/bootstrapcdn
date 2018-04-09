@@ -5,10 +5,8 @@
 'use strict';
 
 const fs = require('fs');
-const https = require('https');
 const path = require('path');
-
-require('shelljs/global');
+const sh = require('shelljs');
 
 let version = process.argv[2];
 
@@ -21,42 +19,25 @@ if (!version) {
 version = version.replace(/^v/, '');
 
 const basedir = path.join(__dirname, '..');
-const bootlintDir = path.join(basedir, 'public', 'bootlint', version);
-const UGLIFYJS = path.join(basedir, 'node_modules/.bin/uglifyjs');
+const bootlintSrcDir = path.join(basedir, 'node_modules/bootlint/dist/browser/');
+const bootlintDistDir = path.join(basedir, 'public', 'bootlint', version);
 
-if (fs.existsSync(bootlintDir)) {
+if (fs.existsSync(bootlintDistDir)) {
     console.log('Bootlint version already found.');
     process.exit(1);
 }
 
-https.get(`https://raw.githubusercontent.com/twbs/bootlint/v${version}/dist/browser/bootlint.js`, (res) => {
-    const statusCode = res.statusCode;
+fs.mkdirSync(bootlintDistDir);
+fs.copyFileSync(`${bootlintSrcDir}/bootlint.js`, `${bootlintDistDir}/bootlint.js`);
 
-    if (statusCode !== 200) {
-        console.log(new Error(`Request Failed.\nStatus Code: ${statusCode}`).message);
-        res.resume();
-        return;
-    }
+const UGLIFYJS = path.join(basedir, 'node_modules/.bin/uglifyjs');
+const targetFile = 'bootlint.js';
+const targetMinFile = `${targetFile.substr(0, targetFile.length - 3)}.min${targetFile.substr(targetFile.lastIndexOf('.'))}`;
+const targetSourceMapFile = `${targetMinFile}.map`;
 
-    fs.mkdirSync(bootlintDir);
+const targetFilepath = path.join(bootlintDistDir, targetFile);
+const targetMinFilepath = path.join(bootlintDistDir, targetMinFile);
 
-    const targetFile = 'bootlint.js';
-    const targetMinFile = `${targetFile.substr(0, targetFile.length - 3)}.min${targetFile.substr(targetFile.lastIndexOf('.'))}`;
-    const targetSourceMapFile = `${targetMinFile}.map`;
+sh.exec(`${UGLIFYJS} ${targetFilepath} -o ${targetMinFilepath} --compress --source-map "filename=${targetSourceMapFile},includeSources,url=${targetSourceMapFile}" --comments "/(?:^!|@(?:license|preserve|cc_on))/"`);
 
-    const targetFilepath = path.join(bootlintDir, targetFile);
-    const targetMinFilepath = path.join(bootlintDir, targetMinFile);
-    const file = fs.createWriteStream(targetFilepath);
-
-    res.pipe(file);
-
-    res.on('end', () => {
-        file.close();
-
-        exec(`${UGLIFYJS} ${targetFilepath} -o ${targetMinFilepath} --compress --source-map "filename=${targetSourceMapFile},includeSources,url=${targetSourceMapFile}" --comments "/(?:^!|@(?:license|preserve|cc_on))/"`);
-
-        console.log(`\nDo not forget to update "${path.normalize('config/_config.yml')}"!`);
-    }).on('error', (err) => {
-        console.error(`Got error: ${err.message}`);
-    });
-});
+console.log(`\nDo not forget to update "${path.normalize('config/_config.yml')}"!`);
