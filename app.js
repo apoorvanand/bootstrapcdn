@@ -21,6 +21,7 @@ const STATIC_OPTS  = {
 // middleware
 const compression  = require('compression');
 const favicon      = require('serve-favicon');
+const minify       = require('express-minify');
 const logger       = require('morgan');
 const serveStatic  = require('serve-static');
 const errorHandler = require('errorhandler');
@@ -91,6 +92,7 @@ if (NODE_ENV === 'production') {
 
 // middleware
 app.use(compression());
+app.use(minify());
 app.use(staticify.middleware);
 
 app.use(favicon(path.join(PUBLIC_DIR, config.favicon.uri), '7d'));
@@ -100,11 +102,11 @@ app.use((req, res, next) => {
     req.config = config;
 
     // custom headers
-    res.setHeader('X-Powered-By', 'StackPath');
-    res.setHeader('X-Hello-Human', 'Say hello back! @getBootstrapCDN on Twitter');
+    res.setHeader('Accept-Ranges', 'bytes');
     res.setHeader('Cache-Control', 'public, max-age=0');
     res.setHeader('Last-Modified', new Date().toUTCString());
-    res.setHeader('Accept-Ranges', 'bytes');
+    res.setHeader('X-Hello-Human', 'Say hello back! @getBootstrapCDN on Twitter');
+    res.setHeader('X-Powered-By', 'StackPath');
 
     res.locals.nonce = Buffer.from(uuid.v4(), 'utf-8').toString('base64');
 

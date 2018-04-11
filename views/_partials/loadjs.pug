@@ -19,10 +19,10 @@
 | var bootstrapBundleUri = '#{bootstrap.javascriptBundle}';
 |
 | loadjs([clipboardjsUri, mainJsUri], 'main', {
-|    before: function(path, el) {
-|        el.integrity = path === mainJsUri ? '#{mainJsSri}' : '#{clipboardjsSri}';
-|        el.crossOrigin = 'anonymous';
-|     },
+|    //before: function(path, el) {
+|        //el.integrity = path === mainJsUri ? '#{mainJsSri}' : '#{clipboardjsSri}';
+|        //el.crossOrigin = 'anonymous';
+|     //},
 |     async: false
 | });
 | loadjs([jqueryUri, bootstrapBundleUri], 'jquery', {
