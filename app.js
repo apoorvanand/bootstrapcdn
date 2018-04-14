@@ -1,10 +1,14 @@
 'use strict';
 
-const http         = require('http');
 const path         = require('path');
 const express      = require('express');
 const uuidv4       = require('uuid/v4');
 const semver       = require('semver');
+
+const helpers      = require('./lib/helpers.js');
+const config       = helpers.getConfig();
+
+const app          = express();
 
 // constants
 const ENV          = process.env;
@@ -30,15 +34,10 @@ const staticify    = require('staticify')(PUBLIC_DIR, {
     sendOptions: STATIC_OPTS
 });
 
-const CSP          = require('./config/helmet-csp.js');
-const helpers      = require('./lib/helpers.js');
-const routes       = require('./routes');
-
-const config       = helpers.getConfig();
-const app          = express();
+const CSP = require('./config/helmet-csp.js');
+const routes = require('./routes/');
 
 // all environments
-app.set('port', ENV.PORT || config.port || 3000);
 app.set('views', path.join(__dirname, '/views/'));
 app.set('view engine', 'pug');
 app.set('etag', false);
@@ -163,50 +162,20 @@ app.locals.getVersionedPath = staticify.getVersionedPath;
 app.locals.semver = semver;
 
 // routes
-app.get('/fontawesome/', routes.renderFontawesome);
-app.get('/bootswatch/', routes.renderBootswatch);
-app.get('/bootswatch4/', routes.renderBootswatch4);
-app.get('/bootlint/', routes.renderBootlint);
-app.get('/alpha/', routes.redirectToRoot);
-app.get('/beta/', routes.redirectToRoot);
-app.get('/legacy/', routes.legacy);
-app.get('/legacy/bootstrap/', routes.renderLegacyBootstrap);
-app.get('/legacy/bootswatch/', routes.renderLegacyBootswatch);
-app.get('/legacy/fontawesome/', routes.renderLegacyFontawesome);
-app.get('/showcase/', routes.renderShowcase);
-app.get('/integrations/', routes.renderIntegrations);
-app.get('/privacy-policy/', routes.renderPrivacyPolicy);
-app.get('/', routes.renderIndex);
-
-// eslint-disable-next-line init-declarations
-let data; // only regenerated on restart
-
-app.get('/data/bootstrapcdn.json', (req, res) => {
-    if (typeof data === 'undefined') {
-        data = {
-            timestamp: new Date(),
-            bootstrap: {},
-            fontawesome: {}
-        };
-
-        config.bootstrap.forEach((bootstrap) => {
-            const bootstrapVersion = bootstrap.version;
-
-            if (semver.satisfies(semver.coerce(bootstrapVersion), '<4')) {
-                data.bootstrap[bootstrapVersion] = {
-                    css: bootstrap.stylesheet,
-                    js: bootstrap.javascript
-                };
-            }
-        });
-
-        config.fontawesome.forEach((fontawesome) => {
-            data.fontawesome[fontawesome.version] = fontawesome.stylesheet;
-        });
-    }
-
-    res.send(data);
-});
+app.use('/', routes.indexRoute);
+app.use('/alpha/?|/beta/?', routes.redirectToRoot);
+app.use('/bootlint/', routes.bootlintRoute);
+app.use('/bootswatch/', routes.bootswatchRoute);
+app.use('/bootswatch4/', routes.bootswatch4Route);
+app.use('/data/bootstrapcdn.json', routes.dataRoute);
+app.use('/fontawesome/', routes.fontawesomeRoute);
+app.use('/integrations/', routes.integrationsRoute);
+app.use('/legacy/', routes.legacyRoute);
+app.use('/legacy/bootstrap/', routes.legacyBootstrapRoute);
+app.use('/legacy/bootswatch/', routes.legacyBootswatchRoute);
+app.use('/legacy/fontawesome/', routes.legacyFontawesomeRoute);
+app.use('/privacy-policy/', routes.privacyPolicyRoute);
+app.use('/showcase/', routes.showcaseRoute);
 
 const map = sitemap({
     url: 'www.bootstrapcdn.com',
@@ -244,9 +213,8 @@ if (ENV.ENABLE_CRAWLING) {
 
 app.get('/robots.txt', (req, res) => map.TXTtoWeb(res));
 
-app.get('*', routes.render404);
+app.use('*', routes.notFoundRoute);
 
-// start
-http.createServer(app).listen(app.get('port'), () => console.log(`Express server listening on port ${app.get('port')}`));
+module.exports = app;
 
 // vim: ft=javascript sw=4 sts=4 et:

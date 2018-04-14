@@ -70,7 +70,7 @@ function runApp(cfg, endpoint) {
     process.env.PORT = port;
 
     // load app
-    require('../app.js');
+    require('../bin/www.js');
 
     return `http://localhost:${port}${endp}`;
 }
