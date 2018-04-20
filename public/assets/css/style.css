@@ -13,7 +13,7 @@
 }
 
 .social {
-    height: 25px;
+    height: 30px;
 }
 
 iframe {
@@ -22,7 +22,7 @@ iframe {
 }
 
 #ghbtns-badge {
-    width: 110px;
+    width: 88px;
     height: 20px;
 }
 
@@ -31,8 +31,9 @@ footer {
 }
 
 .input-group .dropdown-toggle::after {
-    -webkit-transition: -webkit-transform 0.35s ease;
+    transition: -webkit-transform 0.35s ease;
     transition: transform 0.35s ease;
+    transition: transform 0.35s ease, -webkit-transform 0.35s ease;
 }
 
 .input-group .dropdown-toggle-open::after {

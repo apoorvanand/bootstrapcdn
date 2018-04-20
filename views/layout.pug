@@ -3,7 +3,7 @@ html(lang='en', prefix='og: http://ogp.me/ns#', itemscope, itemtype='http://sche
     head
         meta(charset='utf-8')
         meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
-        meta(name='author', content=config.authors.join(', '))
+        meta(name='author', content=config.authors.map(author => author.name).join(', '))
         meta(name='google-site-verification', content='GoWOPbhuU3D9P-yDUxKl1RLuR_vqJIdP_smWw51Wmdc')
 
         -var pageDescription = description || config.description;
@@ -45,6 +45,8 @@ html(lang='en', prefix='og: http://ogp.me/ns#', itemscope, itemtype='http://sche
         meta(itemprop='name', content!=title)
         meta(itemprop='description', content!=pageDescription)
         meta(itemprop='image', content=getVersionedPath('/assets/img/og.png'))
+
+        meta(name='twitter:widgets:csp', content='on')
 
         -var bootswatch = helpers.theme.fetch(config, theme);
         link(rel='stylesheet', href=bootswatch.uri, integrity=bootswatch.sri,

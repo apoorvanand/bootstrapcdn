@@ -4,26 +4,25 @@ footer.mt-5.py-4.text-center
             .col-12
                 p
                     | Maintained by 
-                    a(href='https://twitter.com/jdorfman', target='_blank', rel='noopener') @jdorfman
-                    |  , 
-                    a(href='https://twitter.com/mervinej', target='_blank', rel='noopener') @mervinej
-                    |  and 
-                    a(href='https://xhmikosr.io/', target='_blank', rel='noopener') @XhmikosR
+                    each author, index in config.authors
+                        if (index === config.authors.length - 1)
+                            |  &amp; 
+                        else if (index > 0)
+                            | , 
+                        a(href=author.url, rel='noopener', target='_blank')=`@${author.twitter}` 
+
                 p
-                    a(href='https://www.stackpath.com/', title='StackPath', target='_blank', rel='noopener')
+                    a(href='https://www.stackpath.com/', title='StackPath', rel='noopener', target='_blank')
                         include /assets/img/stackpath-icon.svg
 
                 p
                     | Homies be 
-                    a(href=config.friends[0].url, target='_blank', rel='noopener')=config.friends[0].name 
-                    | , 
-                    a(href=config.friends[1].url, target='_blank', rel='noopener')=config.friends[1].name 
-                    | , 
-                    a(href=config.friends[2].url, target='_blank', rel='noopener')=config.friends[2].name 
-                    | , 
-                    a(href=config.friends[3].url, target='_blank', rel='noopener')=config.friends[3].name 
-                    |  &amp; 
-                    a(href=config.friends[4].url, target='_blank', rel='noopener')=config.friends[4].name
+                    each friend, index in config.friends
+                        if (index === config.friends.length - 1)
+                            |  &amp; 
+                        else if (index > 0)
+                            | , 
+                        a(href=friend.url, rel='noopener', target='_blank')=friend.name 
 
                 p
                     a(href='/privacy-policy/') Privacy Policy
