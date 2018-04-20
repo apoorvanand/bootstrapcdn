@@ -19,7 +19,7 @@
     "test": "npm run lint && npm run mocha",
     "purge-latest": "bash ./scripts/purge.sh",
     "bootlint": "node ./scripts/update_bootlint.js",
-    "bootswatch": "node ./scripts/bootswatch.js",
+    "bootswatch": "node ./scripts/update_bootswatch.js",
     "integrity": "node ./scripts/integrity.js",
     "sri": "node ./scripts/sri.js",
     "wp-plugin": "node ./scripts/wp-plugin.js"
