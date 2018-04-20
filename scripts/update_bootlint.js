@@ -1,12 +1,10 @@
 #!/usr/bin/env node
 
-/* eslint-env shelljs */
-
 'use strict';
 
 const fs = require('fs');
 const path = require('path');
-const sh = require('shelljs');
+const uglifyjs = require('uglify-js');
 
 let version = process.argv[2];
 
@@ -30,14 +28,37 @@ if (fs.existsSync(bootlintDistDir)) {
 fs.mkdirSync(bootlintDistDir);
 fs.copyFileSync(`${bootlintSrcDir}/bootlint.js`, `${bootlintDistDir}/bootlint.js`);
 
-const UGLIFYJS = path.join(basedir, 'node_modules/.bin/uglifyjs');
-const targetFile = 'bootlint.js';
-const targetMinFile = `${targetFile.substr(0, targetFile.length - 3)}.min${targetFile.substr(targetFile.lastIndexOf('.'))}`;
-const targetSourceMapFile = `${targetMinFile}.map`;
+function runUglify() {
+    const targetFile = 'bootlint.js';
+    const targetMinFile = `${targetFile.substr(0, targetFile.length - 3)}.min${targetFile.substr(targetFile.lastIndexOf('.'))}`;
+    const targetSourceMapFile = `${targetMinFile}.map`;
 
-const targetFilepath = path.join(bootlintDistDir, targetFile);
-const targetMinFilepath = path.join(bootlintDistDir, targetMinFile);
+    const targetFilepath = path.join(bootlintDistDir, targetFile);
+    const targetMinFilepath = path.join(bootlintDistDir, targetMinFile);
 
-sh.exec(`${UGLIFYJS} ${targetFilepath} -o ${targetMinFilepath} --compress --source-map "filename=${targetSourceMapFile},includeSources,url=${targetSourceMapFile}" --comments "/(?:^!|@(?:license|preserve|cc_on))/"`);
+    const uglifyOptions = {
+        // compress and mangle are on by default
+        output: {
+            comments: /(?:^!|@(?:license|preserve|cc_on))/
+        },
+        sourceMap: {
+            filename: targetSourceMapFile,
+            //includeSources: true,
+            url: targetSourceMapFile
+        }
+    };
+    const code = fs.readFileSync(targetFilepath, 'utf-8');
+    const result = uglifyjs.minify(code, uglifyOptions);
+
+    if (result.error) {
+        console.log(result.error);
+        process.exit(1);
+    }
+
+    fs.writeFileSync(targetMinFilepath, result.code);
+    fs.writeFileSync(path.join(bootlintDistDir, targetSourceMapFile), result.map);
+}
+
+runUglify();
 
 console.log(`\nDo not forget to update "${path.normalize('config/_config.yml')}"!`);

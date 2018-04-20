@@ -55,7 +55,6 @@
     "pug-lint": "^2.5.0",
     "pug-lint-config-clock": "^2.0.0",
     "request": "^2.85.0",
-    "shelljs": "^0.8.1",
     "uglify-js": "^3.3.21"
   },
   "engines": {
