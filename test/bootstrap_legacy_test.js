@@ -25,7 +25,7 @@ describe('legacy/bootstrap', () => {
     });
 
     it('has header', (done) => {
-        assert(response.body.includes('<h2 class="text-center mb-4">Bootstrap Legacy</h2>'),
+        assert.ok(response.body.includes('<h2 class="text-center mb-4">Bootstrap Legacy</h2>'),
             'Expects response body to include Bootstrap Legacy header');
         done();
     });
@@ -44,14 +44,14 @@ describe('legacy/bootstrap', () => {
                 it(`has javascript ${fmt}`, (done) => {
                     const str = helpers.javascript[fmt](bootstrap.javascript, bootstrap.javascriptSri);
 
-                    assert(response.body.includes(str), `Expects response body to include "${str}"`);
+                    assert.ok(response.body.includes(str), `Expects response body to include "${str}"`);
                     done();
                 });
 
                 it(`has stylesheet ${fmt}`, (done) => {
                     const str = helpers.css[fmt](bootstrap.stylesheet, bootstrap.stylesheetSri);
 
-                    assert(response.body.includes(str), `Expects response body to include "${str}"`);
+                    assert.ok(response.body.includes(str), `Expects response body to include "${str}"`);
                     done();
                 });
             });

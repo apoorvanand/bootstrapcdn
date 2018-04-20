@@ -17,7 +17,7 @@ before((done) => {
 
 describe('404', () => {
     it('works', (done) => {
-        assert.equal(response.statusCode, 404);
+        assert.strictEqual(response.statusCode, 404);
         done();
     });
 
@@ -30,7 +30,7 @@ describe('404', () => {
     });
 
     it('has header', (done) => {
-        assert(response.body.includes('<h2 class="text-center mb-4">Page Not Found</h2>'),
+        assert.ok(response.body.includes('<h2 class="text-center mb-4">Page Not Found</h2>'),
             'Expects response body to include 404 header');
         done();
     });

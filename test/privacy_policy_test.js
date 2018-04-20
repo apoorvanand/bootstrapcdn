@@ -29,7 +29,7 @@ describe('privacy-policy', () => {
     });
 
     it('has header', (done) => {
-        assert(response.body.includes('<h2>Privacy Policy of'),
+        assert.ok(response.body.includes('<h2>Privacy Policy of'),
             'Expects response body to include Privacy Policy header');
         done();
     });

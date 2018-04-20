@@ -33,7 +33,7 @@ describe('showcase', () => {
     });
 
     it('has header', (done) => {
-        assert(response.body.includes('<h2 class="text-center mb-4">Showcase</h2>'),
+        assert.ok(response.body.includes('<h2 class="text-center mb-4">Showcase</h2>'),
             'Expects response body to include Showcase header');
         done();
     });
@@ -41,22 +41,22 @@ describe('showcase', () => {
     config.showcase.forEach((showcase) => {
         describe(showcase.name, () => {
             it('has name', (done) => {
-                assert(response.body.includes(showcase.name),
+                assert.ok(response.body.includes(showcase.name),
                     `Expects response body to include "${showcase.name}"`);
                 done();
             });
             it('has image', (done) => {
-                assert(response.body.includes(staticify(PUBLIC_DIR).getVersionedPath(showcase.img)),
+                assert.ok(response.body.includes(staticify(PUBLIC_DIR).getVersionedPath(showcase.img)),
                     `Expects response body to include "${showcase.img}"`);
                 done();
             });
             it('has lib', (done) => {
-                assert(response.body.includes(showcase.lib),
+                assert.ok(response.body.includes(showcase.lib),
                     `Expects response body to include "${showcase.lib}"`);
                 done();
             });
             it('has url', (done) => {
-                assert(response.body.includes(showcase.url),
+                assert.ok(response.body.includes(showcase.url),
                     `Expects response body to include "${showcase.url}"`);
                 done();
             });
