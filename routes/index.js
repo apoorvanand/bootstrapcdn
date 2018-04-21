@@ -16,6 +16,7 @@ const legacyRoute = require('./legacy.js');
 const privacyPolicyRoute = require('./privacyPolicy.js');
 const redirectToRoot = require('./redirectToRoot.js');
 const showcaseRoute = require('./showcase.js');
+const sitemapRoute = require('./sitemap.js');
 
 const routes = {
     notFoundRoute,
@@ -32,7 +33,8 @@ const routes = {
     legacyRoute,
     privacyPolicyRoute,
     redirectToRoot,
-    showcaseRoute
+    showcaseRoute,
+    sitemapRoute
 };
 
 module.exports = routes;

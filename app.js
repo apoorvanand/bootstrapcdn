@@ -27,7 +27,6 @@ const logger       = require('morgan');
 const serveStatic  = require('serve-static');
 const errorHandler = require('errorhandler');
 const enforce      = require('express-sslify');
-const sitemap      = require('express-sitemap');
 const helmet       = require('helmet');
 const Rollbar      = require('rollbar');
 const staticify    = require('staticify')(PUBLIC_DIR, {
@@ -176,42 +175,7 @@ app.use('/legacy/bootswatch/', routes.legacyBootswatchRoute);
 app.use('/legacy/fontawesome/', routes.legacyFontawesomeRoute);
 app.use('/privacy-policy/', routes.privacyPolicyRoute);
 app.use('/showcase/', routes.showcaseRoute);
-
-const map = sitemap({
-    url: 'www.bootstrapcdn.com',
-    http: 'https',
-    generate: app,
-    cache: 60000,       // enable 1m cache
-    route: {            // custom route
-        '/': {
-            disallow: !ENV.ENABLE_CRAWLING
-        },
-        '/data/bootstrapcdn.json': {
-            hide: true  // exclude this route from xml and txt
-        },
-        '/404/': {
-            hide: true
-        },
-        '/alpha/': {
-            hide: true
-        },
-        '/beta/': {
-            hide: true
-        },
-        '/bootswatch4/': {
-            hide: true
-        },
-        '/legacy/': {
-            hide: true
-        }
-    }
-});
-
-if (ENV.ENABLE_CRAWLING) {
-    app.get('/sitemap.xml', (req, res) => map.XMLtoWeb(res));
-}
-
-app.get('/robots.txt', (req, res) => map.TXTtoWeb(res));
+app.use('/sitemap.xml|/robots.txt', routes.sitemapRoute);
 
 app.use('*', routes.notFoundRoute);
 
