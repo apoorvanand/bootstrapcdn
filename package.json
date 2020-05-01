@@ -21,7 +21,9 @@
     "bootswatch": "node ./scripts/bootswatch.js",
     "integrity": "node ./scripts/integrity.js",
     "sri": "node ./scripts/sri.js",
-    "wp-plugin": "node ./scripts/wp-plugin.js"
+    "wp-plugin": "node ./scripts/wp-plugin.js",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "dependencies": {
     "compression": "^1.7.2",
@@ -41,7 +43,8 @@
     "serve-static": "^1.13.2",
     "sri-toolbox": "^0.2.0",
     "staticify": "^2.0.0",
-    "uuid": "^3.2.1"
+    "uuid": "^3.2.1",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
@@ -57,5 +60,6 @@
   },
   "engines": {
     "node": "8.x"
-  }
+  },
+  "snyk": true
 }
