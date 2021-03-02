@@ -34,7 +34,7 @@
     "js-yaml": "^3.11.0",
     "jstransformer-clean-css": "^2.1.0",
     "morgan": "^1.9.0",
-    "pug": "^2.0.3",
+    "pug": "^3.0.1",
     "rollbar": "^2.3.9",
     "semver": "^5.5.0",
     "serve-favicon": "^2.5.0",
